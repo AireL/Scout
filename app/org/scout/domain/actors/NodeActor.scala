@@ -47,8 +47,10 @@ class NodeActor private (val id: Identity, var displayName: DisplayName, var par
       sender() ! self
     case RegisterConfig(id, name, conf) if id == this.id =>
       config = config + (name -> conf)
-    case GetConfig(id, name) if id == this.id =>
-      sender() ! ExpectedConfig(id, config.get(name).map(name -> _))
+    case msg @ GetConfig(id, name) if id == this.id =>
+      config.get(name).map(cn => ExpectedConfig(id,Some(name, cn)))
+        .orElse(parent.map(_._2 forward msg))
+        .getOrElse(sender() ! ExpectedConfig(id, None))
     case AddChild(id, node) if id == this.id && !isExtensible =>
       sender() ! CannotAddChildToLeaf(id)
     case msg: Message if msg.id == id => (check andThen sendUpdate)(msg)
