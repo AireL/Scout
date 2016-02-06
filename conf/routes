@@ -1,4 +1,5 @@
 GET  /                                      org.scout.controllers.IndexController.index()
+GET  /ints                                  org.scout.controllers.IndexController.numbers()
 
 # Public Assets
 GET  /assets/*file                          controllers.Assets.at(path="/public", file)
