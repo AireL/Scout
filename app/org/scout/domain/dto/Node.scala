@@ -10,11 +10,15 @@ trait AbstractNode {
   def fullParams: Map[String, String]
   protected type NodeType <: AbstractNode
 }
-trait LeafNode extends AbstractNode {
+trait LeafNode extends Node {
   override final protected type NodeType = LeafNode
+  override abstract protected def additionalParameters : Map[String, String] = 
+    Map("extensible" -> false.toString) ++ super.additionalParameters
 }
-trait BranchNode extends AbstractNode {
+trait BranchNode extends Node {
   override final protected type NodeType = Node
+  override abstract protected def additionalParameters : Map[String, String] = 
+    Map("extensible" -> true.toString) ++ super.additionalParameters
 }
 case class Node(override val id: Identity, override val displayName: DisplayName, override val parameters: Map[String, String]) 
     extends AbstractNode with NodeFactory {
