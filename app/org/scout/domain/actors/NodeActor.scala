@@ -11,10 +11,9 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 object NodeActor {
-  def props(node: AbstractNode, parent: Option[ActorRef])(implicit ex: ExecutionContext): Props = {
+  def props(node: AbstractNode, parent: Option[(Identity, ActorRef)])(implicit ex: ExecutionContext): Props = {
     val children : List[AbstractNode] = List(node).collect({ case node: Node with HasChildren => node.children}).flatten
-    val parentDetails = parent.map(a => Option(node).collect({ case node: Node with HasParent => node.parent.id }).getOrElse(Identity("Root")) -> a)
-    Props(new NodeActor(node.id, node.displayName, node.fullParams, parentDetails, children))
+    Props(new NodeActor(node.id, node.displayName, node.fullParams, parent, children))
   }
   protected final val done : ActorRef => Future[ActorRef] = Future.successful(_)
 }
@@ -23,7 +22,7 @@ class NodeActor private (val id: Identity, var displayName: DisplayName, var par
                          var parent: Option[(Identity, ActorRef)], childNodes: List[AbstractNode])(implicit ex: ExecutionContext) extends Actor {
   
   implicit val timeout: Timeout = Timeout(1500, TimeUnit.MILLISECONDS)
-  var children = childNodes.map(cn => (cn.id -> context.actorOf(NodeActor.props(cn, Some(self)), cn.id.value))).toMap
+  var children = childNodes.map(cn => (cn.id -> context.actorOf(NodeActor.props(cn, Some(id, self)), cn.id.value))).toMap
   
   private def toJson: Future[JsonNode] = {
     import scalaz._
@@ -67,7 +66,7 @@ class NodeActor private (val id: Identity, var displayName: DisplayName, var par
         .map(_ => this.parent.foreach(vl => vl._2 !(Get(vl._1), origin)))
         .map(_ => origin)
     case AddChild(id, node) => 
-      children = children + (node.id -> context.actorOf(NodeActor.props(node, Some(self))))
+      children = children + (node.id -> context.actorOf(NodeActor.props(node, Some(this.id, self))))
       NodeActor.done(sender())
     case RemoveChild(id, child) => 
       children = children.filterNot(_._1 == id)
