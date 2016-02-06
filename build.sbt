@@ -8,4 +8,6 @@ libraryDependencies ++= Seq(
   "com.softwaremill.macwire" %% "macros" % "2.2.2" % "provided"
 )
 
+routesGenerator := InjectedRoutesGenerator
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

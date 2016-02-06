@@ -1,1 +1,4 @@
-GET / 										@org.scout.controllers.IndexController.index()
+GET  /                                      org.scout.controllers.IndexController.index()
+
+# Public Assets
+GET  /assets/*file                          controllers.Assets.at(path="/public", file)
