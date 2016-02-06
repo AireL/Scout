@@ -24,6 +24,7 @@ trait AppComponents extends BuiltInComponents with AppModule {
 }
 
 trait AppModule {
+  implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
   // Define your dependencies and controllers
   lazy val indexController = wire[IndexController]
 }
