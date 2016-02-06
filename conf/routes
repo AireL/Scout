@@ -1,0 +1,1 @@
+GET / 										@org.scout.controllers.IndexController.index()
