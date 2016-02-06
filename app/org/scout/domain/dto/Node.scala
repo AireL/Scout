@@ -2,8 +2,17 @@ package org.scout.domain.dto
 
 import java.util.UUID
 
-case class Node(id: Identity, displayName: DisplayName, children: List[Node], parameters: Map[String, String])
+case class Node(id: Identity, displayName: DisplayName, parameters: Map[String, String])
 
+trait HasParent {
+  def parent: Node
+}
+trait HasChildren {
+  def children: List[Node]
+}
+trait TypedNode {
+  def configType: Name
+}
 case class DisplayName(val value: String) extends AnyVal
 case class Identity(val value: String) extends AnyVal 
 object Identity {
