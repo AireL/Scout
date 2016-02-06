@@ -7,8 +7,10 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import play.api.libs.json.Json
 import scala.util.Random
+import org.scout.domain.TreeService
 
-class IndexController()(implicit override val executionContext: ExecutionContext) extends Controller with ControllerToolkit {
+class IndexController(treeService: TreeService)(
+    implicit override val executionContext: ExecutionContext) extends Controller with ControllerToolkit {
   def index() = GET(
     Ok(org.scout.views.html.layout(org.scout.views.html.navbar(), org.scout.views.html.footer()))
   )
