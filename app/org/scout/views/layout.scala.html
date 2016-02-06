@@ -24,6 +24,28 @@
     <script src='@routes.Assets.at("javascripts/NodeHandler.js")'></script>
     <script src='@routes.Assets.at("javascripts/NavigationHandler.js")'></script>
     <script src='@routes.Assets.at("javascripts/subnode.js")'></script>
+    <script>
+        var model;
+        var loadModel = function(subNode) {
+            $.ajax(
+                {
+                type: "GET",
+                url: "/root",
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function(data) {
+                    model = data
+                    subNode.init($("#bob > .row"), $("#nodes-table"), model);
+                },
+                error: function (msg) {
+                    alert(msg.responseText);
+                }
+            });
+        }
+
+    </script>
 
 </head>
 
@@ -58,16 +80,14 @@
                 </h4>
             </div>
             <div id="nodes" class="panel-collapse collapse in">
-                <table class="table">
-                    <tr>
-                        <th>Name</th>
-                    </tr>
-                    <tr>
-                        <td>row 1</td>
-                    </tr>
-                    <tr>
-                        <td>row 2</td>
-                    </tr>
+                <table class="table" id="nodes-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -87,5 +107,11 @@
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.min.js"></script>
+<script>
+    $(function(){
+        loadModel(SubNodes);
+    });
+
+</script>
 </body>
 </html>

@@ -32,4 +32,8 @@ class IndexController(treeService: TreeService)(
   def addNode() = GET(
     Ok("OK")
   )
+
+  def root() = JsonFutureGET(
+    treeService.root
+  )
 }

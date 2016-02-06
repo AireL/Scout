@@ -9,3 +9,5 @@ GET /table                                  org.scout.controllers.IndexControlle
 GET /nodeForm                               org.scout.controllers.IndexController.nodeForm()
 POST /addNode                               org.scout.controllers.IndexController.addNode()
 GET /create                                 org.scout.controllers.IndexController.create()
+
+GET /root                                   org.scout.controllers.IndexController.root()
