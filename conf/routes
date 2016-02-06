@@ -3,3 +3,5 @@ GET  /ints                                  org.scout.controllers.IndexControlle
 
 # Public Assets
 GET  /assets/*file                          controllers.Assets.at(path="/public", file)
+
+GET /table                                  org.scout.controllers.IndexController.table()

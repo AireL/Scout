@@ -14,4 +14,8 @@ class IndexController()(implicit override val executionContext: ExecutionContext
   )
   
   def numbers() = JsonGET((1 to 10).toList.map(_ => Random.nextInt()))
+
+  def table() = GET(
+    Ok(org.scout.views.html.table())
+  )
 }

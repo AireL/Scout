@@ -18,6 +18,9 @@
      <!--Custom styles for this template -->
     <link href='@routes.Assets.at("css/scout.css")' rel="stylesheet">
 
+    <!-- Our scripts -->
+    <script src='@routes.Assets.at("javascripts/TableHandler.js")'></script>
+
 </head>
 
 <body>
@@ -26,7 +29,8 @@
     @navbar
 </nav>
 
-<div class="container">
+<div id="buttstallion" class="container">
+    <button name="btnLoadTable" onclick="loadTable(this.parentElement.id);">Load Table</button>
 </div><!-- /.container -->
 
 <footer class="footer">
