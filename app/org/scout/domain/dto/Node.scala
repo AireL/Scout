@@ -3,6 +3,10 @@ package org.scout.domain.dto
 import java.util.UUID
 
 trait AbstractNode {
+  def id: Identity
+  def displayName: DisplayName
+  def parameters: Map[String, String]
+  def fullParams: Map[String, String]
   protected type NodeType <: AbstractNode
 }
 trait LeafNode extends AbstractNode {
@@ -11,7 +15,10 @@ trait LeafNode extends AbstractNode {
 trait BranchNode extends AbstractNode {
   override final protected type NodeType = Node
 }
-case class Node(id: Identity, displayName: DisplayName, parameters: Map[String, String]) extends AbstractNode
+case class Node(override val id: Identity, override val displayName: DisplayName, override val parameters: Map[String, String]) extends AbstractNode {
+  def fullParams: Map[String, String] = parameters ++ additionalParameters
+  protected def additionalParameters : Map[String, String] = Map()
+}
 
 trait HasParent {
   self: AbstractNode =>
@@ -27,13 +34,14 @@ trait TypedNode {
 }
 case class DisplayName(val value: String) extends AnyVal
 case class Identity(val value: String) extends AnyVal 
+
 object Identity {
   def apply() : Identity = Identity(UUID.randomUUID().toString)
 }
 
 trait Configurable {
   self: AbstractNode =>
-  def configuration: Map[Name, Config]
+  var configuration: Map[Name, Config]
 }
 
 case class Config(fields : List[Field])
