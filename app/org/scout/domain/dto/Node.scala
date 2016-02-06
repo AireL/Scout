@@ -1,6 +1,7 @@
 package org.scout.domain.dto
 
 import java.util.UUID
+import org.scout.domain.NodeFactory
 
 trait AbstractNode {
   def id: Identity
@@ -15,9 +16,19 @@ trait LeafNode extends AbstractNode {
 trait BranchNode extends AbstractNode {
   override final protected type NodeType = Node
 }
-case class Node(override val id: Identity, override val displayName: DisplayName, override val parameters: Map[String, String]) extends AbstractNode {
+case class Node(override val id: Identity, override val displayName: DisplayName, override val parameters: Map[String, String]) 
+    extends AbstractNode with NodeFactory {
   def fullParams: Map[String, String] = parameters ++ additionalParameters
   protected def additionalParameters : Map[String, String] = Map()
+  def extensibleNode(name: DisplayName, params: Map[String, String]) : Node = new {
+    override val children = List()
+    override val parent = this
+  } with Node(Identity(), name, params) with HasChildren with BranchNode with HasParent
+
+  def node(name: DisplayName, params: Map[String, String]) : Node = new {
+    override val children = List()
+    override val parent = this
+  } with Node(Identity(), name, params) with HasChildren with LeafNode with HasParent
 }
 
 trait HasParent {

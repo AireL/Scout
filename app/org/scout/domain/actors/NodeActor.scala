@@ -16,7 +16,7 @@ object NodeActor {
     val parentDetails = parent.map(a => Option(node).collect({ case node: Node with HasParent => node.parent.id }).getOrElse(Identity("Root")) -> a)
     Props(new NodeActor(node.id, node.displayName, node.fullParams, parentDetails, children))
   }
-  protected final val done = Future.successful(())
+  protected final val done : ActorRef => Future[ActorRef] = Future.successful(_)
 }
 
 class NodeActor private (val id: Identity, var displayName: DisplayName, var params: Map[String, String],
@@ -47,30 +47,31 @@ class NodeActor private (val id: Identity, var displayName: DisplayName, var par
     case msg: Message => children.values.foreach(_ forward msg)
   }
 
-  private val sendUpdate : Future[Unit] => Unit = _.map { _ =>
-    val origin = sender()
+  private val sendUpdate : Future[ActorRef] => Unit = _.map { origin =>
     toJson.map(origin ! GetSuccess(id, _))
       .recover { case ex: Exception => ex.printStackTrace() }
   }
 
-  private def check: PartialFunction[Message, Future[Unit]] = {
+  private def check: PartialFunction[Message, Future[ActorRef]] = {
     case UpdateParams(id, func) => 
       params = func(params)
-      NodeActor.done
+      NodeActor.done(sender())
     case UpdateDisplayName(id, func) => 
       displayName = func(displayName)
-      NodeActor.done
+      NodeActor.done(sender())
     case UpdateParent(id, parent, root) => 
+      val origin = sender()
       (root ? AddChildActor(parent, id, self))
         .map(ref => this.parent = Some(parent -> ref.asInstanceOf[ActorRef]))
         .map(_ => this.parent.foreach(p => p._2 ! RemoveChild(p._1, id)))
-        .map(_ => this.parent.foreach(vl => vl._2 forward Get(vl._1)))
+        .map(_ => this.parent.foreach(vl => vl._2 !(Get(vl._1), origin)))
+        .map(_ => origin)
     case AddChild(id, node) => 
       children = children + (node.id -> context.actorOf(NodeActor.props(node, Some(self))))
-      NodeActor.done
+      NodeActor.done(sender())
     case RemoveChild(id, child) => 
       children = children.filterNot(_._1 == id)
-      NodeActor.done
-    case Get(id) => NodeActor.done
+      NodeActor.done(sender())
+    case Get(id) => NodeActor.done(sender())
   }
 }
