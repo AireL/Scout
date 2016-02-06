@@ -1,7 +1,11 @@
 GET  /                                      org.scout.controllers.IndexController.index()
+GET  /home                                  org.scout.controllers.IndexController.index()
 GET  /ints                                  org.scout.controllers.IndexController.numbers()
 
 # Public Assets
 GET  /assets/*file                          controllers.Assets.at(path="/public", file)
 
 GET /table                                  org.scout.controllers.IndexController.table()
+GET /nodeForm                               org.scout.controllers.IndexController.nodeForm()
+POST /addNode                               org.scout.controllers.IndexController.addNode()
+GET /create                                 org.scout.controllers.IndexController.create()

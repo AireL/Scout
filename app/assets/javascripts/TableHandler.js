@@ -1,7 +1,3 @@
-function loadTable(containerName) {
-    $("#" + containerName).load("/table");
-};
-
 function updateTable() {
     var service = 'http://localhost:9000/ints';
     jQuery.support.cors = true;

@@ -20,4 +20,16 @@ class IndexController(treeService: TreeService)(
   def table() = GET(
     Ok(org.scout.views.html.table())
   )
+
+  def create() = GET(
+    Ok(org.scout.views.html.create())
+  )
+
+  def nodeForm() = GET(
+    Ok(org.scout.views.html.createNode())
+  )
+
+  def addNode() = GET(
+    Ok("OK")
+  )
 }
