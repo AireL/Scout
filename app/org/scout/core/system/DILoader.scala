@@ -10,9 +10,9 @@ import org.scout.controllers.IndexController
 import org.scout.domain.TreeService
 import org.scout.domain.impl.TreeServiceImpl
 import org.scout.domain.impl.TreeServiceImpl
-import org.scout.domain.dto.Node
 import akka.actor.ActorSystem
 import scala.concurrent.Future
+import org.scout.domain.dto.JsonNode
 
 class DILoader extends ApplicationLoader {
   def load(context: Context) = {
@@ -38,7 +38,7 @@ trait AppModule extends AppWiring {
   implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
   // Define your dependencies and controllers
   val system = ActorSystem("Nodes")
-  val nodes : List[Node] = List()
+  val nodes : List[JsonNode] = List()
   
   val treeService = wire[TreeServiceImpl]
   lazy val indexController = wire[IndexController]

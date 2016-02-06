@@ -9,26 +9,29 @@ import akka.util.Timeout
 import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.util.Try
 
 object NodeActor {
-  def props(node: AbstractNode, parent: Option[(Identity, ActorRef)])(implicit ex: ExecutionContext): Props = {
-    val children : List[AbstractNode] = List(node).collect({ case node: Node with HasChildren => node.children}).flatten
-    Props(new NodeActor(node.id, node.displayName, node.fullParams, parent, children))
+  def props(node: JsonNode, parent: Option[(Identity, ActorRef)])(implicit ex: ExecutionContext): Props = {
+    Props(new NodeActor(Identity(node.id), DisplayName(node.displayName), node.params, parent, node.children))
   }
   protected final val done : ActorRef => Future[ActorRef] = Future.successful(_)
 }
 
 class NodeActor private (val id: Identity, var displayName: DisplayName, var params: Map[String, String],
-                         var parent: Option[(Identity, ActorRef)], childNodes: List[AbstractNode])(implicit ex: ExecutionContext) extends Actor {
+                         var parent: Option[(Identity, ActorRef)], childNodes: List[JsonNode])(implicit ex: ExecutionContext) extends Actor {
   
   implicit val timeout: Timeout = Timeout(1500, TimeUnit.MILLISECONDS)
-  var children = childNodes.map(cn => (cn.id -> context.actorOf(NodeActor.props(cn, Some(id, self)), cn.id.value))).toMap
+  val extensible = JsonNode.extensible
+  var children = childNodes.map(cn => (cn.id -> context.actorOf(NodeActor.props(cn, Some(id, self)), cn.id))).toMap
+  var config : Map[Name, Config] = Map()
+  def isExtensible : Boolean = params.get(extensible).flatMap(i => Try(i.toBoolean).toOption).getOrElse(false)
   
   private def toJson: Future[JsonNode] = {
     import scalaz._
     import Scalaz._
 
-    children.map(child => child._2 ? Get(child._1)).toList.sequenceU.map(queries =>
+    children.map(child => child._2 ? Get(Identity(child._1))).toList.sequenceU.map(queries =>
       JsonNode(this.id.value, displayName.value, params, queries.flatMap {
         case GetSuccess(id, node) => List(node)
         case other                => Nil
@@ -40,8 +43,14 @@ class NodeActor private (val id: Identity, var displayName: DisplayName, var par
       parent.foreach(p => p._2 forward RemoveChild(p._1, this.id))
       context.stop(self)
     case AddChildActor(id, child, ref) => 
-      children = children + (child -> ref)
+      children = children + (child.value -> ref)
       sender() ! self
+    case RegisterConfig(id, name, conf) if id == this.id =>
+      config = config + (name -> conf)
+    case GetConfig(id, name) if id == this.id =>
+      sender() ! ExpectedConfig(id, config.get(name).map(name -> _))
+    case AddChild(id, node) if id == this.id && !isExtensible =>
+      sender() ! CannotAddChildToLeaf(id)
     case msg: Message if msg.id == id => (check andThen sendUpdate)(msg)
     case msg: Message => children.values.foreach(_ forward msg)
   }
