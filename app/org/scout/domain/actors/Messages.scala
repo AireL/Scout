@@ -16,7 +16,7 @@ case class AddChildActor(override val id: Identity, child: Identity, childRef: A
 case class UpdateSuccess(override val id: Identity, updatedNode: JsonNode) extends Message
 case class RegisterConfig(override val id: Identity, name: Name, config: Config) extends Message
 case class GetConfig(override val id: Identity, name: Name) extends Message
-case class ExpectedConfig(override val id: Identity, config: Option[(Name, Config)]) extends Message
+case class ExpectedConfig(override val id: Identity, config: Option[Config]) extends Message
 case class Get(override val id: Identity) extends Message
 case class GetSuccess(override val id: Identity, node: JsonNode) extends Message
 
