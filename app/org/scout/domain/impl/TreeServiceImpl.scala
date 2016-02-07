@@ -11,12 +11,15 @@ import org.scout.domain.actors._
 import java.util.concurrent.TimeUnit
 import akka.util.Timeout
 import org.scout.domain.NodeFactory
+import org.scout.services.Repository
+import org.scout.services.impl.RepositoryActor
 
-class TreeServiceImpl(system: ActorSystem, nodes: List[JsonNode])(implicit ex: ExecutionContext) extends TreeService {
+class TreeServiceImpl(system: ActorSystem, repo: Repository, nodes: List[JsonNode])(implicit ex: ExecutionContext) extends TreeService {
   private val rootNode = NodeFactory.extensibleNode(DisplayName("Root"), Map[String,String]())
   
   implicit val timeout: Timeout = Timeout(1500, TimeUnit.MILLISECONDS)
-  val rootActor = system.actorOf(NodeActor.props(rootNode, None), "Root")
+  val repoActor = system.actorOf(RepositoryActor.props(repo), "Repository")
+  val rootActor = system.actorOf(NodeActor.props(rootNode, None, repoActor), "Root")
   
   // TEST DATA
   val c1 = NodeFactory.extensibleNode(DisplayName("C1"), Map("A" -> "A value", "B" -> "B Value"))

@@ -8,7 +8,7 @@ case class DisplayName(val value: String) extends AnyVal
 case class Identity(val value: String) extends AnyVal 
 
 object Identity {
-  def apply() : Identity = Identity(UUID.randomUUID().toString)
+  def random: Identity = Identity(UUID.randomUUID().toString)
 }
 
 sealed trait AbstractConfig {
@@ -99,9 +99,3 @@ case class Radio(labels: List[Label]) extends FieldType
 case object DateTime extends FieldType
 case object File extends FieldType
 case object Number extends FieldType
-
-case class Node(id: String, displayName: String, params: Map[String, String], children: List[String], parent: Option[String])
-case object Node {
-  implicit val format = Json.format[Node]
-  val extensible = "extensible"
-}
