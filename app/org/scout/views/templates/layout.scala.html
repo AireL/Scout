@@ -1,0 +1,85 @@
+@(navbar : Html, footer: Html)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="scout.ico">
+
+    <title>Starter Template for Bootstrap</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!--Custom styles for this template -->
+    <link href='@routes.Assets.at("css/scout.css")' rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    @navbar
+</nav>
+
+<div id="breadcrumbList" class="container">
+    <ol id = "breadcrumbs" class="breadcrumb">
+    </ol>
+</div>
+
+<div id="buttstallion" class="container">
+</div><!-- /.container -->
+
+<footer class="footer">
+    @footer
+</footer>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.min.js"></script>
+
+<!-- Our scripts -->
+<script src='@routes.Assets.at("javascripts/TableHandler.js")'></script>
+<script src='@routes.Assets.at("javascripts/NodeHandler.js")'></script>
+<script src='@routes.Assets.at("javascripts/NavigationHandler.js")'></script>
+<script src='@routes.Assets.at("javascripts/subnode.js")'></script>
+
+<script>
+    $(function(){
+        loadModel();
+        window.onhashchange = interceptBack;
+    });
+</script>
+<script>
+	var model;
+	var loadModel = function() {
+	    $.ajax(
+	        {
+	        type: "GET",
+	        url: "/root",
+	        data: "{}",
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        cache: false,
+	        success: function(data) {
+	            model = data
+                interceptBack();
+	        },
+	        error: function (msg) {
+	            alert(msg.responseText);
+	        }
+	    });
+	}
+</script>
+</body>
+</html>
