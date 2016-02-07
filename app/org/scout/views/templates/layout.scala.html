@@ -56,12 +56,13 @@
 
 <script>
     $(function(){
-        loadModel(SubNodes);
+        loadModel();
+        window.onhashchange = interceptBack;
     });
 </script>
 <script>
 	var model;
-	var loadModel = function(subNode) {
+	var loadModel = function() {
 	    $.ajax(
 	        {
 	        type: "GET",
@@ -72,8 +73,6 @@
 	        cache: false,
 	        success: function(data) {
 	            model = data
-	            subNode.init($("#bob > .row"), $("#nodes-table"), model);
-	            window.onhashchange = interceptBack;
                 interceptBack();
 	        },
 	        error: function (msg) {

@@ -65,11 +65,16 @@ var SubNodes = function SubNodes() {
   };
 
   var drawSubNode = function drawSubNode(parent, child) {
-    var template = '<div class="panel panel-default"><div class="panel-heading">{{title}}</div><div class="panel-body">{{desc}}<span onclick="SubNodes.showForId(\'{{id}}\')" class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span></div></div>';
+    var hash = window.location.hash;
+    if(hash === "") {
+      hash = "#";
+    }
+    var template = '<div class="panel panel-default"><div class="panel-heading">{{title}}</div><div class="panel-body">{{desc}}<a href="{{url}}/{{desc}}" onclick="SubNodes.showForId(\'{{id}}\')"><span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span></a></div></div>';
     Mustache.parse(template);
     var rendered = Mustache.render(template, {
       title : child.displayName,
       desc : child.displayName,
+      url : hash,
       id : child.id
     });
     $(parent).append(rendered);
