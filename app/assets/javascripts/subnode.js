@@ -5,53 +5,70 @@ var SubNodes = function SubNodes() {
     this.branch = branch;
     this.leafTable = leaf;
     this.cols = branch.children();
-    draw.call(this)
   };
 
   var showForId = function(id) {
     draw.call(this, id);
   };
-  
+
   var showForPath = function(path) {
     draw.call(this, findChildFromPath(path).id);
   }
-  
+
   var getIdForPath = function(path) {
-    return findChildFromPath.call(this,path).id
+    return findChildFromPath.call(this, path).id
   }
 
   var findChildFromPath = function(path) {
     var curNode = this.model;
-    if(path === "") {
+    if (path === "") {
       return curNode;
     }
     var pathParts = path.split("/");
     var queue = [];
     var curChild;
     var curPart = pathParts.shift();
-    
+
     queue = queue.concat(curNode.children);
-    while(queue.length > 0) {
+    while (queue.length > 0) {
       curChild = queue.shift();
-      if(curChild.displayName === curPart) {
+      if (curChild.displayName === curPart) {
         queue = curChild.children;
         curPart = pathParts.shift();
-        if(curPart === undefined) { 
+        if (curPart === undefined) {
           break;
         }
       }
     }
-    
-    if(pathParts.length !==0) {
+
+    if (pathParts.length !== 0) {
       // warn user
       alert("Couldn't find: " + path);
       return model;
     } else {
       return curChild;
     }
-    
   }
   
+  var findById = function(id) {
+    var curNode = this.model
+    if (id != undefined) {
+      var stack = [];
+      stack.push(curNode);
+      var curChild;
+      console.log("bob!");
+      while (stack.length != 0) {
+        curChild = stack.shift();
+        if (curChild.id === id) {
+          curNode = curChild
+          break;
+        }
+        stack = stack.concat(curChild.children);
+      }
+    }
+    return curNode;
+  }
+
   var addSubNode = function(child) {
     var smallest;
     this.cols.each(function() {
@@ -66,8 +83,10 @@ var SubNodes = function SubNodes() {
 
   var drawSubNode = function drawSubNode(parent, child) {
     var hash = window.location.hash;
-    if(hash === "") {
-      hash = "#";
+    if (hash.length <= 2) {
+      hash = "#/node";
+    } else if (hash.endsWith("/")) {
+      hash = hash.substring(0, hash.length - 1);
     }
     var template = '<div class="panel panel-default"><div class="panel-heading">{{title}}</div><div class="panel-body">{{desc}}<a href="{{url}}/{{desc}}" onclick="SubNodes.showForId(\'{{id}}\')"><span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span></a></div></div>';
     Mustache.parse(template);
@@ -82,25 +101,11 @@ var SubNodes = function SubNodes() {
 
   var draw = function draw(id) {
     clearCols.call(this);
-    var parent = this.model
-    if (id != undefined) {
-      var stack = [];
-      stack.push(parent);
-      var curChild;
-      console.log("bob!");
-      while (stack.length != 0) {
-        curChild = stack.shift();
-        if (curChild.id === id) {
-          parent = curChild
-          break;
-        }
-        stack = stack.concat(curChild.children);
-      }
-    }
-
+    var parent = findById(id);
     var children = parent.children;
     var leaves = [];
     var branches = [];
+    
     children.forEach(function(child) {
       if (child.params.extensible === "true") {
         branches.push(child);
@@ -130,6 +135,7 @@ var SubNodes = function SubNodes() {
   };
 
   var clearCols = function clearCols() {
+    this.branch.children("p").remove();
     this.cols.each(function() {
       while (this.firstChild) {
         this.removeChild(this.firstChild);
@@ -138,7 +144,7 @@ var SubNodes = function SubNodes() {
   }
 
   var clearTable = function clearTable() {
-    this.leafTable.children("tbody tr").remove();
+    this.leafTable.children("tbody").children().remove();
   };
 
   return {

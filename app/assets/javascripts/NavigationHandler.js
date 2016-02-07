@@ -6,14 +6,25 @@ function loadUrl(url, func) {
   }
 }
 
+var loadedHtml = "";
+
+var mappedFunction = {
+    "node" : SubNodes.showForPath
+}
+
 function interceptBack() {
   var url = window.location.hash;
   createBreadcrumbs(url);
 
   if (url === "") {
-    loadUrl('/home', function() {
-      SubNodes.init($("#bob > .row"), $("#nodes-table"), model);
-    });
+    if (loadedHtml !== "node") {
+      loadUrl('/home', function() {
+        mappedFunction["node"].call(SubNodes, "");
+      });
+      loadedHtml = "node";
+    } else {
+      mappedFunction["node"].call(SubNodes, "");
+    }
   } else if (url.startsWith('#')) {
     var path = url.substring(2);
     var firstSlashIdx = path.indexOf('/');
@@ -23,12 +34,18 @@ function interceptBack() {
       firstPart = path.substring(0, firstSlashIdx);
       rest = path.substring(firstSlashIdx + 1);
     }
-    if (firstPart === "") {
-      loadUrl('/home');
-    } else if (firstPart === "node") {
-      SubNodes.showForPath(rest);
+    if (firstPart === "" || firstPart === "node") {
+      if (loadedHtml !== "node") {
+        loadUrl('/home', function() {
+          mappedFunction["node"].call(SubNodes, rest);
+        });
+        loadedHtml = "node";
+      } else {
+        mappedFunction["node"].call(SubNodes, rest);
+      }
     } else if (firstPart === "create") {
       handleCreatePages(rest);
+      loadedHtml = "create";
     }
   }
 };
@@ -51,7 +68,7 @@ function createBreadcrumbs(url) {
   var count = 1;
   var rendered = Mustache.render(template, {
     url : "",
-    name : "home"
+    name : "Home"
   });
   bcs.append(rendered);
   elements.forEach(function(el) {

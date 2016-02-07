@@ -1,4 +1,3 @@
-<button name="btnLoadTable" onclick="loadUrl('/table');">Load Table</button>
 <h3><a data-toggle="collapse" href="#bob">Sub-Nodes</a></h3>
 <div id="bob" class="collapse in">
     <div class="row">
@@ -34,3 +33,6 @@
         </div>
     </div>
 </div>
+<script>
+	SubNodes.init($("#bob > .row"), $("#nodes-table"), model);
+</script>
