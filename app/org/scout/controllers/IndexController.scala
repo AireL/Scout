@@ -12,9 +12,13 @@ import org.scout.domain.TreeService
 class IndexController(treeService: TreeService)(
     implicit override val executionContext: ExecutionContext) extends Controller with ControllerToolkit {
   def index() = GET(
-    Ok(org.scout.views.html.layout(org.scout.views.html.navbar(), org.scout.views.html.footer()))
+    Ok(org.scout.views.html.templates.layout(org.scout.views.html.templates.navbar(), org.scout.views.html.templates.footer()))
   )
-  
+
+  def home() = GET(
+    Ok(org.scout.views.html.home())
+  )
+
   def numbers() = JsonGET((1 to 10).toList.map(_ => Random.nextInt()))
 
   def table() = GET(
