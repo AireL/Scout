@@ -82,6 +82,8 @@ class NodeActor private (val id: Identity, var displayName: DisplayName, var par
     case RemoveChild(id, child) => 
       children = children.filterNot(_._1 == id)
       NodeActor.done(sender())
-    case Get(id) => NodeActor.done(sender())
+    case Get(id) => 
+      val origin = sender()
+      NodeActor.done(origin)
   }
 }
