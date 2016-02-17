@@ -15,23 +15,30 @@ import org.scout.services.Repository
 import org.scout.services.impl.RepositoryActor
 
 class TreeServiceImpl(system: ActorSystem, repo: Repository, nodes: List[JsonNode])(implicit ex: ExecutionContext) extends TreeService {
-  private val rootNode = NodeFactory.extensibleNode(DisplayName("Root"), Map[String,String]())
+  private val rootNode = NodeFactory.extensibleNode(DisplayName("Site"), Map[String,String]())
   
   implicit val timeout: Timeout = Timeout(1500, TimeUnit.MILLISECONDS)
   val repoActor = system.actorOf(RepositoryActor.props(repo), "Repository")
   val rootActor = system.actorOf(NodeActor.props(rootNode, None, repoActor), "Root")
   
   // TEST DATA
+  val bob = Config(Name("site"), Description("General site configuration"), List(Field(Name("url"), Description("Site url"), Text, false)));
   val c1 = NodeFactory.extensibleNode(DisplayName("C1"), Map("A" -> "A value", "B" -> "B Value"))
   val c2 = NodeFactory.extensibleNode(DisplayName("C2"), Map("A" -> "A value", "B" -> "B Value"))
-  val c11 = NodeFactory.node(DisplayName("C1-1"), Map("A" -> "A value", "B" -> "B Value"), parent = Some(Identity(c2.id)))
+  val c11 = NodeFactory.node(DisplayName("C1-1"), Map("A" -> "A value", "B" -> "B Value"), parent = Some(Identity(c1.id)))
+  val c12 = NodeFactory.node(DisplayName("C1-2"), Map("A" -> "A value", "B" -> "B Value"), parent = Some(Identity(c1.id)))
 
   addChild(Identity(rootNode.id), c1)
     .flatMap(_ => addChild(Identity(rootNode.id), c2))
     .flatMap(_ => addChild(Identity(c1.id), c11))
+    .flatMap(_ => addChild(Identity(c1.id), c12))
+    .flatMap(_ => Future.successful(registerConfig(Identity(rootNode.id), bob)))
     .flatMap(_ => root)
     .recover {case ex: Exception => ex.printStackTrace()}
     .map(println)
+    .flatMap(_ => getConfig(Identity(rootNode.id), bob.name))
+    .map(println)
+    .recover {case ex: Exception => ex.printStackTrace()}
   
   private def getAndReturn(msg: Message) : Future[JsonNode] = (rootActor ? (msg)).flatMap {
       case msg: GetSuccess => Future.successful(msg.node)
@@ -47,7 +54,7 @@ class TreeServiceImpl(system: ActorSystem, repo: Repository, nodes: List[JsonNod
   def addChild(id: Identity, newChild: JsonNode) : Future[JsonNode] = getAndReturn(AddChild(id, newChild))
   def removeNode(id: Identity) : Future[JsonNode] = getAndReturn(RemoveNode(id))
   
-  def registerConfig(id: Identity, name: Name, config: Config) : Unit = rootActor ! RegisterConfig(id, name, config)
+  def registerConfig(id: Identity, config: Config) : Unit = rootActor ! RegisterConfig(id, config)
   def getConfig(id: Identity, name: Name) : Future[ExpectedConfig] = (rootActor ? (GetConfig(id, name))).map(_.asInstanceOf[ExpectedConfig])
 }
 

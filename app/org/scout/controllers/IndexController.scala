@@ -11,7 +11,7 @@ import org.scout.domain.TreeService
 
 class IndexController(treeService: TreeService)(
     implicit override val executionContext: ExecutionContext) extends Controller with ControllerToolkit {
-  def index() = GET(
+  def index(path : String) = GET(
     Ok(org.scout.views.html.templates.layout(org.scout.views.html.templates.navbar(), org.scout.views.html.templates.footer()))
   )
 

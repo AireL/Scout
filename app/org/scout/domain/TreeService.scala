@@ -13,6 +13,6 @@ trait TreeService {
   def addChild(id: Identity, newChild: JsonNode) : Future[JsonNode]
   def removeNode(id: Identity) : Future[JsonNode]
   
-  def registerConfig(id: Identity, name: Name, config: Config) : Unit
+  def registerConfig(id: Identity, config: Config) : Unit
   def getConfig(id: Identity, name: Name) : Future[ExpectedConfig]
 }
