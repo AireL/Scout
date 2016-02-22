@@ -6,7 +6,8 @@
       'scout.config',
       'scout.routes',
       'scout.layout',
-      'scout.nodes'
+      'scout.nodes',
+      'scout.utils'
     ]);
 
   angular

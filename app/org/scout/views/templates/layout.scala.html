@@ -26,8 +26,8 @@
     @navbar
 </nav>
 
-<div id="breadcrumbList" class="container">
-    <ol id = "breadcrumbs" class="breadcrumb" />
+<div class="container" <div ng-controller="BreadcrumbsController">
+    <breadcrumbs breadcrumbs="breadcrumbs"></breadcrumbs>
 </div>
 
 <div id="buttstallion" class="container">
@@ -62,40 +62,9 @@
 <script type="text/javascript" src='@routes.Assets.at("javascripts/nodes/services/nodes.service.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/nodes/directives/node.directive.js")'></script>
 
-<!-- Our scripts -->
-<!--
-<script src='@routes.Assets.at("javascripts/TableHandler.js")'></script>
-<script src='@routes.Assets.at("javascripts/NodeHandler.js")'></script>
-<script src='@routes.Assets.at("javascripts/subnode.js")'></script>
-<script src='@routes.Assets.at("javascripts/NavigationHandler.js")'></script>
- 
-<script>
-    $(function(){
-        loadModel();
-        window.onhashchange = interceptBack;
-    });
-</script>
-<script>
-	var model;
-	var loadModel = function() {
-	    $.ajax(
-	        {
-	        type: "GET",
-	        url: "/root",
-	        data: "{}",
-	        contentType: "application/json; charset=utf-8",
-	        dataType: "json",
-	        cache: false,
-	        success: function(data) {
-	            model = data
-                interceptBack();
-	        },
-	        error: function (msg) {
-	            alert(msg.responseText);
-	        }
-	    });
-	}
-</script>
--->
+<script type="text/javascript" src='@routes.Assets.at("javascripts/utils/utils.module.js")'></script>
+<script type="text/javascript" src='@routes.Assets.at("javascripts/utils/controllers/breadcrumbs.controller.js")'></script>
+<script type="text/javascript" src='@routes.Assets.at("javascripts/utils/directives/breadcrumbs.directive.js")'></script>
+
 </body>
 </html>
