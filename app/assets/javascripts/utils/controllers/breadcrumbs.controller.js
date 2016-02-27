@@ -29,7 +29,7 @@
         }
         
         function makeCrumbs() {
-            var path = $location.url();
+            var path = $location.path();
             
             var crumbs = [];
             if (path.endsWith("/")) {
