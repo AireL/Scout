@@ -19,6 +19,7 @@
 
     vm.columns = [];
     vm.root;
+    vm.parent;
     vm.path;
     vm.leaves;
 
@@ -47,10 +48,8 @@
       var width = $(window).width();
 
       if (width >= 1200) {
-        return 4;
-      } else if (width >= 992) {
         return 3;
-      } else if (width >= 768) {
+      } else if (width >= 992) {
         return 2;
       } else {
         return 1;
@@ -100,6 +99,7 @@
 
       vm.leaves = leaves;
       $scope.branches = branches;
+      vm.parent = parent;
     }
 
     function findChildFromPath(path) {

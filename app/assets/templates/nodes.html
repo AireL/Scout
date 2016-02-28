@@ -5,16 +5,22 @@
   <div id="subnodes" class="collapse in">
     <div class="row">
       <div ng-repeat="column in vm.columns">
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="col-sm-9 col-md-4 col-lg-3">
           <div ng-repeat="node in column">
             <node node="node"></node>
           </div>
         </div>
       </div>
+      <div class="col-sm-3 col-md-4 col-lg-3">
+        <div class="input-group" ng-repeat="(key, value) in vm.parent.params">
+          <span class="input-group-addon" id="{{key}}">{{key}}</span>
+          <input type="text" class="form-control" value="{{value}}" aria-describedby="{{key}}" readonly="true">
+        </div>
+      </div>
 
       <div ng-hide="branches && branches.length">
         <div class="col-sm-12 no-subnodes">
-          <em>The are no subnodes.</em>
+          <em>The are no branches</em>
         </div>
       </div>
     </div>
@@ -42,7 +48,7 @@
             </table>
             <div ng-hide="vm.leaves && vm.leaves.length">
               <div class="col-sm-12 no-subnodes">
-                <em>The are no subnodes.</em>
+                <em>The are no leaves</em>
               </div>
             </div>
           </div>
