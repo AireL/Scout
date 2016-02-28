@@ -1,36 +1,45 @@
 <div ng-cloak>
-  <h3>
-    <a data-toggle="collapse" href="#subnodes">Sub-Nodes</a>
-  </h3>
-  <div id="subnodes" class="collapse in">
-    <div class="row">
-      <div ng-repeat="column in vm.columns">
-        <div class="col-sm-9 col-md-4 col-lg-3">
-          <div ng-repeat="node in column">
-            <node node="node" urlbase="vm.urlbase"></node>
+  <div class="row">
+    <div class="col-sm-9">
+      <h3>
+        <a data-toggle="collapse" href="javascript:void(0)" data-target="#subnodes">Sub-Nodes</a>
+      </h3>
+      <div class="row">
+        <div id="subnodes" class="collapse in">
+          <div ng-repeat="column in vm.columns">
+            <div class="col-sm-12 col-md-6 col-lg-4">
+              <div ng-repeat="node in column">
+                <node node="node" urlbase="vm.urlbase"></node>
+              </div>
+            </div>
+          </div>
+          <div ng-hide="branches && branches.length">
+            <div class="col-sm-9 no-subnodes">
+              <em>The are no branches</em>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-3 col-md-4 col-lg-3">
+    </div>
+    
+    <div class="col-sm-3 col-md-4 col-lg-3">
+      <h3>
+        <a data-toggle="collapse" href="javascript:void(0)" data-target="#params">Params</a>
+      </h3>
+      <div id="params" class="collapse in">
         <div class="input-group" ng-repeat="(key, value) in vm.parent.params">
           <span class="input-group-addon" id="{{key}}">{{key}}</span>
           <input type="text" class="form-control" value="{{value}}" aria-describedby="{{key}}" readonly="true">
         </div>
       </div>
-
-      <div ng-hide="branches && branches.length">
-        <div class="col-sm-12 no-subnodes">
-          <em>The are no branches</em>
-        </div>
-      </div>
     </div>
   </div>
 
-  <div class="panel-group">
+  <div class="panel-group row">
       <div class="panel panel-default">
           <div class="panel-heading">
               <h4 class="panel-title">
-                  <a data-toggle="collapse" href="#nodes">Nodes</a>
+                  <a data-toggle="collapse" href="javascript:void(0)" data-target="#nodes">Nodes</a>
               </h4>
           </div>
           <div id="nodes" class="panel-collapse collapse in">
