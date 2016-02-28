@@ -7,7 +7,7 @@
       <div ng-repeat="column in vm.columns">
         <div class="col-sm-9 col-md-4 col-lg-3">
           <div ng-repeat="node in column">
-            <node node="node"></node>
+            <node node="node" urlbase="vm.urlbase"></node>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
                   </tr>
                 </thead>
                   <tr ng-repeat="leaf in vm.leaves">
-                    <td>{{leaf.displayName}}</td>
+                    <td><a href="{{vm.urlbase}}{{leaf.displayName}}">{{leaf.displayName}}</a></td>
                   </tr>
                 <tbody>
                 </tbody>

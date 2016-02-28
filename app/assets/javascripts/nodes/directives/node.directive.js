@@ -21,7 +21,8 @@
     var directive = {
       restrict: 'E',
       scope: {
-        node: '='
+        node: '=',
+        urlbase: '='
       },
       templateUrl: 'assets/templates/subnode.html'
     };

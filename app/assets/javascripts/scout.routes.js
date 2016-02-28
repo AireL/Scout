@@ -20,7 +20,7 @@
       controller: 'NodesController',
       controllerAs: 'vm',
       templateUrl: 'assets/templates/nodes.html'
-    }).when('/nodes/:nodePath', {
+    }).when('/nodes/:nodePath*', {
       controller: 'NodesController',
       controllerAs: 'vm',
       templateUrl: 'assets/templates/nodes.html'

@@ -22,6 +22,7 @@
     vm.parent;
     vm.path;
     vm.leaves;
+    vm.urlbase;
 
     activate();
 
@@ -34,6 +35,10 @@
     function activate() {
       Nodes.root().then(modelLoaded);
       vm.path = $routeParams.nodePath;
+      vm.urlbase = "/nodes/"
+      if(vm.path != undefined && vm.path != "") {
+        vm.urlbase = "/nodes/" + vm.path + "/"
+      }
       $scope.$watch(function () { return $scope.branches; }, render);
       $scope.$watch(function () { return vm.leaves; }, render);
     }
